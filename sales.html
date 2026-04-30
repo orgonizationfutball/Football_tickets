@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Ticket Admin</title>
+
+<style>
+body {
+  background: #111;
+  color: white;
+  font-family: Arial;
+  text-align: center;
+}
+
+.ticket {
+  background: white;
+  color: black;
+  margin: 10px auto;
+  padding: 10px;
+  width: 300px;
+  border-radius: 10px;
+}
+
+button {
+  padding: 8px;
+  margin: 5px;
+  border-radius: 6px;
+  border: none;
+}
+
+.del { background: red; color: white; }
+.reset { background: crimson; color: white; }
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <h2>🔐 Вхід</h2>
+  <input type="password" id="pass" placeholder="Пароль">
+  <br>
+  <button onclick="login()">Увійти</button>
+</div>
+
+<!-- ADMIN -->
+<div id="admin" style="display:none">
+
+<h1>🎟 Продані квитки</h1>
+
+<p>Всього: <span id="count">0</span></p>
+
+<button class="reset" onclick="resetAll()">🗑 Очистити все</button>
+
+<div id="list"></div>
+
+</div>
+
+<script>
+
+const PASSWORD = "2016";
+
+// 🔐 логін
+function login(){
+  let p = document.getElementById("pass").value;
+
+  if(p === PASSWORD){
+    document.getElementById("login").style.display = "none";
+    document.getElementById("admin").style.display = "block";
+    render();
+  } else {
+    alert("❌ Невірний пароль");
+  }
+}
+
+// 📦 отримати квитки
+function getTickets(){
+  return JSON.parse(localStorage.getItem("tickets") || "[]");
+}
+
+// 💾 зберегти
+function save(t){
+  localStorage.setItem("tickets", JSON.stringify(t));
+}
+
+// 📋 показ
+function render(){
+  let list = document.getElementById("list");
+  list.innerHTML = "";
+
+  let tickets = getTickets();
+
+  document.getElementById("count").innerText = tickets.length;
+
+  tickets.forEach((t,i)=>{
+    let div = document.createElement("div");
+    div.className = "ticket";
+
+    div.innerHTML = `
+      👤 ${t.name}<br>
+      🎫 ${t.id || "NO-ID"}<br>
+      <button class="del" onclick="remove(${i})">❌ Видалити</button>
+    `;
+
+    list.appendChild(div);
+  });
+}
+
+// ❌ видалити
+function remove(i){
+  let t = getTickets();
+  t.splice(i,1);
+  save(t);
+  render();
+}
+
+// 🗑 очистити
+function resetAll(){
+  localStorage.removeItem("tickets");
+  render();
+}
+
+</script>
+
+</body>
+</html>
