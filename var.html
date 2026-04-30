@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>VAR System</title>
+
+<style>
+body {
+  background: black;
+  color: white;
+  text-align: center;
+  font-family: Arial;
+}
+
+h1 {
+  margin-top: 30px;
+}
+
+#screen {
+  font-size: 40px;
+  margin-top: 100px;
+}
+
+button {
+  padding: 15px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: none;
+  margin-top: 30px;
+  background: green;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎥 VAR SYSTEM</h1>
+
+<div id="screen">Натисни для перевірки</div>
+
+<button onclick="startVAR()">▶️ Перевірити момент</button>
+
+<script>
+
+function startVAR() {
+
+  let screen = document.getElementById("screen");
+
+  // звук
+  beep();
+
+  screen.innerText = "⏳ ПЕРЕВІРКА...";
+
+  // затримка як на ТВ
+  setTimeout(() => {
+
+    let result = Math.random();
+
+    if (result > 0.5) {
+      screen.innerText = "✅ ГОЛ ЗАРАХОВАНО";
+      document.body.style.background = "green";
+    } else {
+      screen.innerText = "❌ ГОЛ СКАСОВАНО";
+      document.body.style.background = "red";
+    }
+
+    beep();
+
+  }, 2000);
+}
+
+// звук
+function beep(){
+  let ctx = new (window.AudioContext || window.webkitAudioContext)();
+  let o = ctx.createOscillator();
+  o.frequency.value = 700;
+  o.connect(ctx.destination);
+  o.start();
+  setTimeout(()=>o.stop(),200);
+}
+
+</script>
+
+</body>
+</html>
