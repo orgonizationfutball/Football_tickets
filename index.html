@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<title>Football Tickets</title>
+<title>Квитки</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
@@ -18,9 +18,15 @@ body {
   background: white;
   color: black;
   width: 320px;
-  margin: 50px auto;
+  margin: 30px auto;
   padding: 20px;
   border-radius: 15px;
+}
+
+input {
+  padding: 8px;
+  margin: 10px;
+  width: 80%;
 }
 
 button {
@@ -31,6 +37,16 @@ button {
   border-radius: 8px;
   margin-top: 10px;
 }
+
+.list {
+  background: white;
+  color: black;
+  width: 320px;
+  margin: 20px auto;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: left;
+}
 </style>
 </head>
 
@@ -38,31 +54,60 @@ button {
 
 <h1>⚽ Квитки на футбол</h1>
 
-<div class="ticket" id="ticket">
+<div class="ticket">
   <h2>Товариський матч</h2>
   <p>📅 30 травня</p>
   <p>⏰ 19:00</p>
+
+  <!-- ОЦЕ ГОЛОВНЕ -->
+  <input id="name" placeholder="Введи ім'я">
+
   <div id="qrcode"></div>
-  <button onclick="generate()">Згенерувати квиток 🎟️</button>
-  <button onclick="download()">Скачати PDF 📄</button>
+
+  <button onclick="generate()">Отримати квиток 🎟️</button>
+</div>
+
+<div class="list">
+  <h3>📋 Глядачі:</h3>
+  <ul id="viewerList"></ul>
 </div>
 
 <script>
-let qrData = "";
+let viewers = JSON.parse(localStorage.getItem("viewers")) || [];
+
+function save() {
+  localStorage.setItem("viewers", JSON.stringify(viewers));
+}
+
+function render() {
+  const list = document.getElementById("viewerList");
+  list.innerHTML = "";
+  viewers.forEach(v => {
+    const li = document.createElement("li");
+    li.textContent = v.name + " — " + v.ticket;
+    list.appendChild(li);
+  });
+}
 
 function generate() {
-  qrData = "TICKET-" + Math.floor(Math.random()*100000);
+  const name = document.getElementById("name").value;
+
+  if (!name) {
+    alert("Введи ім'я!");
+    return;
+  }
+
+  const ticket = "TICKET-" + Math.floor(Math.random()*100000);
+
+  viewers.push({ name, ticket });
+  save();
+  render();
+
   document.getElementById("qrcode").innerHTML = "";
-  new QRCode(document.getElementById("qrcode"), qrData);
+  new QRCode(document.getElementById("qrcode"), ticket);
 }
 
-function download() {
-  const element = document.getElementById("ticket");
-  const win = window.open('', '', 'height=600,width=400');
-  win.document.write(element.innerHTML);
-  win.document.close();
-  win.print();
-}
+render();
 </script>
 
 </body>
