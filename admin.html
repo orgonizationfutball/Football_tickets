@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Адмінка</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+body {
+  background: black;
+  color: white;
+  text-align: center;
+  font-family: Arial;
+}
+#reader {
+  width: 300px;
+  margin: auto;
+}
+.result {
+  font-size: 26px;
+  margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🛂 Перевірка квитків</h1>
+
+<div id="reader"></div>
+<div class="result" id="result">Скануй QR...</div>
+
+<script>
+
+// список використаних квитків (щоб не пускати 2 рази)
+let usedTickets = JSON.parse(localStorage.getItem("used") || "[]");
+
+function saveUsed() {
+  localStorage.setItem("used", JSON.stringify(usedTickets));
+}
+
+function check(code) {
+  try {
+    const data = JSON.parse(code);
+
+    if (!data.id || !data.name) {
+      show("❌ Невірний квиток", "red");
+      return;
+    }
+
+    if (usedTickets.includes(data.id)) {
+      show("⚠️ ВЖЕ ВИКОРИСТАНИЙ\n" + data.name, "orange");
+      return;
+    }
+
+    usedTickets.push(data.id);
+    saveUsed();
+
+    show("✅ ДОПУСК\n" + data.name, "lightgreen");
+
+  } catch {
+    show("❌ Помилка QR", "red");
+  }
+}
+
+function show(text, color) {
+  const el = document.getElementById("result");
+  el.innerText = text;
+  el.style.color = color;
+}
+
+// запуск сканера
+const scanner = new Html5Qrcode("reader");
+
+scanner.start(
+  { facingMode: "environment" },
+  { fps: 10, qrbox: 250 },
+  (decodedText) => {
+    check(decodedText);
+  }
+);
+
+</script>
+
+</body>
+</html>
