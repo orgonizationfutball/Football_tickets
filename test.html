@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<body style="text-align:center">
+
+<h2>TEST QR</h2>
+
+<button onclick="gen()">Зробити QR</button>
+
+<div id="qrcode"></div>
+
+<script>
+function gen(){
+  let data = encodeURIComponent("TEST123");
+  let url = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + data;
+
+  document.getElementById("qrcode").innerHTML =
+    `<img src="${url}">`;
+}
+</script>
+
+</body>
+</html>
