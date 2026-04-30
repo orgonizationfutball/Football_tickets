@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Квитки на футбол</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+body {
+  background: linear-gradient(#0b6623, #003300);
+  font-family: Arial;
+  text-align: center;
+  color: white;
+}
+
+.ticket {
+  background: white;
+  color: black;
+  width: 320px;
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+input {
+  padding: 10px;
+  width: 80%;
+  margin-top: 10px;
+}
+
+button {
+  background: green;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.qr {
+  margin-top: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>⚽ Квитки на футбол</h1>
+
+<div class="ticket">
+  <h2>Товариський матч</h2>
+  <p>📅 1 травня</p>
+  <p>⏰ 19:00</p>
+
+  <p>🎟 Залишилось місць: <span id="left"></span> / 20</p>
+
+  <input id="name" placeholder="Введи ім'я">
+
+  <br>
+  <button onclick="buy()">Купити квиток 🎟️</button>
+  <button onclick="adminReset()">🔐 Адмін</button>
+
+  <div id="qrcode" class="qr"></div>
+</div>
+
+<h2>📋 Мої квитки</h2>
+<div id="list"></div>
+
+<script>
+
+const MAX_TICKETS = 20;
+
+// --- LOCAL STORAGE ---
+function getTickets() {
+  return JSON.parse(localStorage.getItem("tickets") || "[]");
+}
+
+function saveTickets(tickets) {
+  localStorage.setItem("tickets", JSON.stringify(tickets));
+}
+
+// --- ОНОВЛЕННЯ ЛІЧИЛЬНИКА ---
+function updateLeft() {
+  let tickets = getTickets();
+  let left = MAX_TICKETS - tickets.length;
+  if (left < 0) left = 0;
+  document.getElementById("left").innerText = left;
+}
+
+// --- ПОКУПКА ---
+function buy() {
+  const name = document.getElementById("name").value.trim();
+
+  if (!name) {
+    alert("Введи ім'я!");
+    return;
+  }
+
+  let tickets = getTickets();
+
+  if (tickets.length >= MAX_TICKETS) {
+    alert("⛔ Місць більше нема!");
+    return;
+  }
+
+  const ticket = {
+    id: "TICKET-" + Date.now(),
+    name: name
+  };
+
+  tickets.push(ticket);
+  saveTickets(tickets);
+
+  showQR(ticket);
+  render();
+  updateLeft();
+}
+
+// --- QR ---
+function showQR(data) {
+  document.getElementById("qrcode").innerHTML = "";
+  new QRCode(document.getElementById("qrcode"), JSON.stringify(data));
+}
+
+// --- СПИСОК ---
+function render() {
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  const tickets = getTickets();
+
+  tickets.forEach(t => {
+    if (!t.id) return; // фікс undefined
+
+    const div = document.createElement("div");
+    div.className = "ticket";
+
+    div.innerHTML = `
+      👤 ${t.name}<br>
+      🎫 ${t.id}<br>
+      <button onclick='showQR(${JSON.stringify(t)})'>Показати QR</button>
+    `;
+
+    list.appendChild(div);
+  });
+}
+
+// --- АДМІН ---
+function adminReset() {
+  const password = prompt("Введи пароль адміністратора:");
+
+  if (password === "2016") {
+    localStorage.clear();
+    alert("✅ Усі квитки очищено");
+    location.reload();
+  } else {
+    alert("❌ Невірний пароль");
+  }
+}
+
+// --- СТАРТ ---
+render();
+updateLeft();
+
+</script>
+
+</body>
+</html>
