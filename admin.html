@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Адмінка</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+body {
+  background: black;
+  color: white;
+  text-align: center;
+  font-family: Arial;
+}
+
+input {
+  padding: 10px;
+  margin: 10px;
+  border-radius: 8px;
+  border: none;
+}
+
+button {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+}
+
+#reader { width: 300px; margin: auto; }
+
+.ok { color: lime; }
+.bad { color: red; }
+
+.box {
+  margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🔐 ЛОГІН -->
+<div id="login">
+  <h2>🔐 Вхід в адмінку</h2>
+  <input type="password" id="pass" placeholder="Пароль">
+  <br>
+  <button onclick="login()">Увійти</button>
+</div>
+
+<!-- 📲 АДМІНКА -->
+<div id="admin" style="display:none">
+
+<h1>📲 Перевірка квитків</h1>
+
+<p>🎟 Місць: <span id="count">0</span> / 20</p>
+
+<button onclick="startScanner()">📷 Сканувати</button>
+<button onclick="switchCamera()">🔄 Камера</button>
+<button onclick="resetAll()">🗑 Скинути</button>
+
+<div id="reader"></div>
+<div id="result"></div>
+
+<div class="box">
+<h3>📋 Глядачі:</h3>
+<div id="list"></div>
+</div>
+
+</div>
+
+<script>
+// 🔐 пароль
+const PASSWORD = "1234";
+
+// 🎟 ліміт місць
+const MAX_TICKETS = 20;
+
+// дані
+let usedTickets = JSON.parse(localStorage.getItem("usedTickets")) || [];
+let peopleList = JSON.parse(localStorage.getItem("peopleList")) || [];
+
+let html5QrCode;
+let cameras = [];
+let currentCamera = 0;
+
+// логін
+function login() {
+  let p = document.getElementById("pass").value;
+
+  if (p === PASSWORD) {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("admin").style.display = "block";
+    updateList();
+  } else {
+    alert("❌ Невірний пароль");
+  }
+}
+
+// 🔊 звук
+function beep() {
+  let ctx = new (window.AudioContext || window.webkitAudioContext)();
+  let o = ctx.createOscillator();
+  o.frequency.value = 1000;
+  o.connect(ctx.destination);
+  o.start();
+  setTimeout(() => o.stop(), 150);
+}
+
+// запуск
+function startScanner() {
+  html5QrCode = new Html5Qrcode("reader");
+
+  Html5Qrcode.getCameras().then(devices => {
+    cameras = devices;
+    currentCamera = devices.length > 1 ? 1 : 0;
+    startCamera(cameras[currentCamera].id);
+  });
+}
+
+function startCamera(id) {
+  html5QrCode.start(
+    id,
+    { fps: 10, qrbox: 250 },
+    msg => {
+      beep();
+      checkTicket(msg);
+      html5QrCode.stop();
+    }
+  );
+}
+
+function switchCamera() {
+  if (!cameras.length) return;
+
+  html5QrCode.stop().then(() => {
+    currentCamera = (currentCamera + 1) % cameras.length;
+    startCamera(cameras[currentCamera].id);
+  });
+}
+
+// перевірка
+function checkTicket(data) {
+  let result = document.getElementById("result");
+
+  try {
+    let ticket = JSON.parse(data);
+
+    if (usedTickets.includes(ticket.id)) {
+      result.innerHTML = "❌ Вже був: " + ticket.name;
+      result.className = "bad";
+      return;
+    }
+
+    if (peopleList.length >= MAX_TICKETS) {
+      result.innerHTML = "⛔ Нема місць";
+      result.className = "bad";
+      return;
+    }
+
+    usedTickets.push(ticket.id);
+    peopleList.push(ticket.name);
+
+    localStorage.setItem("usedTickets", JSON.stringify(usedTickets));
+    localStorage.setItem("peopleList", JSON.stringify(peopleList));
+
+    result.innerHTML = "✅ Пройшов: " + ticket.name;
+    result.className = "ok";
+
+    updateList();
+
+  } catch {
+    result.innerHTML = "❌ Помилка QR";
+    result.className = "bad";
+  }
+}
+
+// список
+function updateList() {
+  let list = document.getElementById("list");
+  let count = document.getElementById("count");
+
+  list.innerHTML = "";
+  count.innerText = peopleList.length;
+
+  peopleList.forEach(name => {
+    let div = document.createElement("div");
+    div.innerText = "👤 " + name;
+    list.appendChild(div);
+  });
+}
+
+// скинути
+function resetAll() {
+  localStorage.clear();
+  usedTickets = [];
+  peopleList = [];
+  updateList();
+}
+</script>
+
+</body>
+</html>
