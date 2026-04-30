@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>VAR System</title>
+
+<style>
+body {
+  background: black;
+  color: white;
+  text-align: center;
+  font-family: Arial;
+}
+
+h1 {
+  margin-top: 30px;
+}
+
+#screen {
+  font-size: 40px;
+  margin-top: 100px;
+}
+
+button {
+  padding: 15px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: none;
+  margin: 10px;
+}
+
+.start { background: blue; color: white; }
+.ok { background: green; color: white; }
+.no { background: red; color: white; }
+</style>
+</head>
+
+<body>
+
+<h1>🎥 VAR SYSTEM</h1>
+
+<div id="screen">Натисни “Перевірка”</div>
+
+<button class="start" onclick="startVAR()">▶️ Перевірка</button>
+
+<br>
+
+<button class="ok" onclick="approve()">✅ Зараховано</button>
+<button class="no" onclick="reject()">❌ Скасовано</button>
+
+<script>
+
+function startVAR() {
+  let screen = document.getElementById("screen");
+
+  document.body.style.background = "black";
+  screen.innerText = "⏳ ПЕРЕВІРКА...";
+
+  beep();
+}
+
+// ✅ зараховано
+function approve() {
+  document.getElementById("screen").innerText = "✅ ГОЛ ЗАРАХОВАНО";
+  document.body.style.background = "green";
+  beep();
+}
+
+// ❌ скасовано
+function reject() {
+  document.getElementById("screen").innerText = "❌ ГОЛ СКАСОВАНО";
+  document.body.style.background = "red";
+  beep();
+}
+
+// 🔊 звук
+function beep(){
+  let ctx = new (window.AudioContext || window.webkitAudioContext)();
+  let o = ctx.createOscillator();
+  o.frequency.value = 700;
+  o.connect(ctx.destination);
+  o.start();
+  setTimeout(()=>o.stop(),200);
+}
+
+</script>
+
+</body>
+</html>
