@@ -59,7 +59,6 @@ button {
   <p>📅 30 травня</p>
   <p>⏰ 19:00</p>
 
-  <!-- ОЦЕ ГОЛОВНЕ -->
   <input id="name" placeholder="Введи ім'я">
 
   <div id="qrcode"></div>
@@ -89,11 +88,20 @@ function render() {
   });
 }
 
+// 🔥 ГОЛОВНА ФУНКЦІЯ (з перевіркою)
 function generate() {
-  const name = document.getElementById("name").value;
+  const name = document.getElementById("name").value.trim();
 
   if (!name) {
     alert("Введи ім'я!");
+    return;
+  }
+
+  // ❌ перевірка дубля
+  const exists = viewers.find(v => v.name.toLowerCase() === name.toLowerCase());
+
+  if (exists) {
+    alert("❌ Ти вже маєш квиток!");
     return;
   }
 
