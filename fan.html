@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Fan Zone</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  text-align: center;
+  color: white;
+  background: black;
+  transition: 0.3s;
+}
+
+#big {
+  font-size: 60px;
+  margin-top: 30%;
+}
+
+button {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🎮 FAN CONTROL</h2>
+
+<button onclick="goal()">⚽ ГОЛ</button>
+<button onclick="clap()">👏 Аплодисменти</button>
+<button onclick="boo()">👎 Буу</button>
+
+<br><br>
+
+<button onclick="green()">🟢 Зелений</button>
+<button onclick="red()">🔴 Червоний</button>
+<button onclick="yellow()">🟡 Жовтий</button>
+
+<br><br>
+
+<input id="text" placeholder="Напис...">
+<button onclick="show()">📢 Показати</button>
+
+<div id="big"></div>
+
+<script>
+
+function setText(t){
+  document.getElementById("big").innerText = t;
+}
+
+// ефекти
+function goal(){
+  setText("⚽ ГОООООЛ!!!");
+  document.body.style.background = "green";
+}
+
+function clap(){
+  setText("👏👏👏");
+}
+
+function boo(){
+  setText("👎 БУУУУ");
+}
+
+// кольори
+function green(){ document.body.style.background = "green"; }
+function red(){ document.body.style.background = "red"; }
+function yellow(){ document.body.style.background = "gold"; }
+
+// текст
+function show(){
+  let t = document.getElementById("text").value;
+  setText(t);
+}
+
+</script>
+
+</body>
+</html>
