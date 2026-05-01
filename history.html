@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Історія матчу</title>
+
+<style>
+body {
+  background: #111;
+  color: white;
+  text-align: center;
+  font-family: Arial;
+}
+
+.box {
+  background: #222;
+  margin: 15px;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+button {
+  padding: 10px;
+  margin: 10px;
+  border: none;
+  border-radius: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>📊 Історія матчу</h1>
+
+<div class="box">
+  <h2>🛂 Звичайні глядачі</h2>
+  <p id="countNormal"></p>
+  <ul id="normalList"></ul>
+</div>
+
+<div class="box">
+  <h2>⭐ VIP глядачі</h2>
+  <p id="countVIP"></p>
+  <ul id="vipList"></ul>
+</div>
+
+<button onclick="clearHistory()">🗑 Очистити ВСЕ</button>
+
+<script>
+
+// 📋 звичайні
+function renderNormal(){
+  let data = JSON.parse(localStorage.getItem("enteredNormal") || "[]");
+
+  document.getElementById("countNormal").innerText =
+    "Кількість: " + data.length;
+
+  let list = document.getElementById("normalList");
+  list.innerHTML = "";
+
+  data.forEach(name=>{
+    let li = document.createElement("li");
+    li.innerText = name;
+    list.appendChild(li);
+  });
+}
+
+// ⭐ VIP
+function renderVIP(){
+  let data = JSON.parse(localStorage.getItem("enteredVIP") || "[]");
+
+  document.getElementById("countVIP").innerText =
+    "Кількість: " + data.length;
+
+  let list = document.getElementById("vipList");
+  list.innerHTML = "";
+
+  data.forEach(code=>{
+    let li = document.createElement("li");
+    li.innerText = code;
+    list.appendChild(li);
+  });
+}
+
+// 🗑 очистка
+function clearHistory(){
+
+  let ok = confirm("Точно очистити ВСЮ історію?");
+  if(!ok) return;
+
+  localStorage.removeItem("enteredNormal");
+  localStorage.removeItem("enteredVIP");
+  localStorage.removeItem("usedTickets");
+  localStorage.removeItem("usedVIP");
+
+  renderNormal();
+  renderVIP();
+
+  alert("Історію очищено");
+}
+
+// старт
+renderNormal();
+renderVIP();
+
+</script>
+
+</body>
+</html>
