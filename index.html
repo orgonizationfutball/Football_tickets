@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Квитки</title>
+
+<style>
+body {background:#003300;color:white;text-align:center;font-family:Arial;}
+.ticket {background:white;color:black;margin:10px;padding:10px;border-radius:10px;}
+</style>
+</head>
+
+<body>
+
+<h1>⚽ Квитки</h1>
+
+<input id="name" placeholder="Ім'я"><br><br>
+
+<select id="type">
+<option value="NORMAL">🟢 Звичайний (50)</option>
+<option value="VIP">🟡 VIP (80)</option>
+</select><br><br>
+
+<a href="https://send.monobank.ua/jar/762ovKnizs" target="_blank">
+<button>💳 Оплатити</button>
+</a>
+
+<br><br>
+
+<button onclick="buy()">✅ Я оплатив</button>
+
+<div id="qrcode"></div>
+
+<hr>
+
+<h2>📋 Мої квитки</h2>
+<div id="list"></div>
+
+<script>
+
+function getTickets(){
+  return JSON.parse(localStorage.getItem("tickets")||"[]");
+}
+
+function save(t){
+  localStorage.setItem("tickets",JSON.stringify(t));
+}
+
+function buy(){
+  let name = document.getElementById("name").value;
+  let type = document.getElementById("type").value;
+
+  if(!name) return alert("Введи ім'я");
+
+  let t = getTickets();
+
+  let ticket = {
+    id:"TICKET-"+Date.now(),
+    name,
+    type
+  };
+
+  t.push(ticket);
+  save(t);
+
+  showQR(ticket);
+  render();
+}
+
+function showQR(t){
+
+  let main = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
+  encodeURIComponent(JSON.stringify(t));
+
+  let html = `<h3>🎟 Квиток</h3><img src="${main}">`;
+
+  if(t.type==="VIP"){
+
+    let link = "https://orgonizationfutball.github.io/Football_tickets/vip.html?code="+t.id;
+
+    let vipQR = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data="+encodeURIComponent(link);
+
+    html += `<h3>⭐ VIP ДОСТУП</h3><img src="${vipQR}">`;
+  }
+
+  document.getElementById("qrcode").innerHTML = html;
+}
+
+function showQRById(id){
+  let t = getTickets().find(x=>x.id===id);
+  if(t) showQR(t);
+}
+
+function render(){
+  let list=document.getElementById("list");
+  list.innerHTML="";
+
+  getTickets().forEach(t=>{
+    list.innerHTML+=`
+    <div class="ticket">
+      ${t.type==="VIP"?"⭐ VIP":"🎟"}
+      ${t.name}<br>
+      <button onclick="showQRById('${t.id}')">QR</button>
+    </div>`;
+  });
+}
+
+render();
+
+</script>
+
+</body>
+</html>
