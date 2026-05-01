@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Статистика матчу</title>
+
+<style>
+body {
+  background: #0b6623;
+  color: white;
+  text-align: center;
+  font-family: Arial;
+}
+
+.box {
+  background: #003300;
+  margin: 15px;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+button {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+}
+</style>
+</head>
+
+<body>
+
+<h1>⚽ Статистика матчу</h1>
+
+<div class="box">
+  <h2>⚽ Голи</h2>
+  <p id="goals">0</p>
+  <button onclick="add('goals')">+1</button>
+</div>
+
+<div class="box">
+  <h2>🟨 Жовті картки</h2>
+  <p id="yellow">0</p>
+  <button onclick="add('yellow')">+1</button>
+</div>
+
+<div class="box">
+  <h2>🟥 Червоні картки</h2>
+  <p id="red">0</p>
+  <button onclick="add('red')">+1</button>
+</div>
+
+<div class="box">
+  <h2>🚫 Офсайди</h2>
+  <p id="offside">0</p>
+  <button onclick="add('offside')">+1</button>
+</div>
+
+<div class="box">
+  <h2>🎯 Удари</h2>
+  <p id="shots">0</p>
+  <button onclick="add('shots')">+1</button>
+</div>
+
+<br>
+<button onclick="resetAll()">🗑 Скинути все</button>
+
+<script>
+
+let stats = JSON.parse(localStorage.getItem("matchStats") || `{
+  "goals":0,
+  "yellow":0,
+  "red":0,
+  "offside":0,
+  "shots":0
+}`);
+
+function save(){
+  localStorage.setItem("matchStats", JSON.stringify(stats));
+}
+
+function render(){
+  document.getElementById("goals").innerText = stats.goals;
+  document.getElementById("yellow").innerText = stats.yellow;
+  document.getElementById("red").innerText = stats.red;
+  document.getElementById("offside").innerText = stats.offside;
+  document.getElementById("shots").innerText = stats.shots;
+}
+
+function add(type){
+  stats[type]++;
+  save();
+  render();
+}
+
+function resetAll(){
+  if(!confirm("Скинути статистику?")) return;
+
+  stats = {
+    goals:0,
+    yellow:0,
+    red:0,
+    offside:0,
+    shots:0
+  };
+
+  save();
+  render();
+}
+
+render();
+
+</script>
+
+</body>
+</html>
