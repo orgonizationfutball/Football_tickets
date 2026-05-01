@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin</title>
+<script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+
+<body style="text-align:center">
+
+<h2>🛂 Сканер</h2>
+
+<div id="reader" style="width:300px;margin:auto;"></div>
+
+<h3 id="result"></h3>
+
+<h3>📋 Хто зайшов:</h3>
+<ul id="enteredList"></ul>
+
+<button onclick="resetEntered()">🗑 Очистити список</button>
+
+<script>
+
+function onScanSuccess(decodedText){
+
+  let result = document.getElementById("result");
+
+  let used = JSON.parse(localStorage.getItem("usedTickets") || "[]");
+  let entered = JSON.parse(localStorage.getItem("enteredNormal") || "[]");
+
+  try{
+    let t = JSON.parse(decodedText);
+
+    // 🚫 VIP сюди не можна
+    if(t.type === "VIP"){
+      document.body.style.background = "red";
+      result.innerText = "❌ VIP → інший вхід";
+      return;
+    }
+
+    // ❌ вже використаний
+    if(used.includes(t.id)){
+      document.body.style.background = "orange";
+      result.innerText = "⚠️ ВЖЕ ВИКОРИСТАНО: " + t.name;
+      return;
+    }
+
+    // ✅ додаємо
+    used.push(t.id);
+    entered.push(t.name);
+
+    localStorage.setItem("usedTickets", JSON.stringify(used));
+    localStorage.setItem("enteredNormal", JSON.stringify(entered));
+
+    document.body.style.background = "green";
+    result.innerText = "🟢 ДОЗВОЛЕНО: " + t.name;
+
+    renderList();
+
+  }catch{
+    document.body.style.background = "red";
+    result.innerText = "❌ НЕВІРНИЙ QR";
+  }
+}
+
+let scanner = new Html5QrcodeScanner("reader",{fps:10});
+scanner.render(onScanSuccess);
+
+// 📋 список
+function renderList(){
+  let list = document.getElementById("enteredList");
+  let data = JSON.parse(localStorage.getItem("enteredNormal") || "[]");
+
+  list.innerHTML = "";
+
+  data.forEach(name=>{
+    let li = document.createElement("li");
+    li.innerText = name;
+    list.appendChild(li);
+  });
+}
+
+// 🗑 очистка
+function resetEntered(){
+  localStorage.removeItem("enteredNormal");
+  localStorage.removeItem("usedTickets");
+  renderList();
+  alert("Список очищено");
+}
+
+renderList();
+
+</script>
+
+</body>
+</html>
