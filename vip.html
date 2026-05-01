@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>VIP</title>
+</head>
+
+<body style="background:black;color:gold;text-align:center">
+
+<h1 id="status">🔐 Перевірка...</h1>
+
+<div id="vip" style="display:none">
+<h1>⭐ VIP ZONE ⭐</h1>
+</div>
+
+<script>
+
+let code = new URLSearchParams(location.search).get("code");
+
+if(code && code.startsWith("TICKET-")){
+  document.getElementById("status").style.display="none";
+  document.getElementById("vip").style.display="block";
+}else{
+  document.getElementById("status").innerText="❌ Нема доступу";
+}
+
+</script>
+
+</body>
+</html>
