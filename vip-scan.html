@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>VIP Сканер</title>
+<script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+
+<body style="text-align:center;background:black;color:gold;">
+
+<h1>⭐ VIP Вхід</h1>
+
+<div id="reader" style="width:300px;margin:auto;"></div>
+
+<h2 id="result">Скануй VIP QR</h2>
+
+<h3>⭐ VIP зайшли:</h3>
+<ul id="vipList"></ul>
+
+<button onclick="resetVIP()">🗑 Очистити VIP</button>
+
+<script>
+
+function onScanSuccess(text){
+
+  let result = document.getElementById("result");
+
+  let used = JSON.parse(localStorage.getItem("usedVIP") || "[]");
+  let vipList = JSON.parse(localStorage.getItem("enteredVIP") || "[]");
+
+  if(text.includes("vip.html?code=")){
+
+    let code = text.split("code=")[1];
+
+    if(code && code.startsWith("TICKET-")){
+
+      if(used.includes(code)){
+        document.body.style.background = "orange";
+        result.innerText = "⚠️ ВЖЕ VIP ЗАЙШОВ";
+        return;
+      }
+
+      used.push(code);
+      vipList.push(code);
+
+      localStorage.setItem("usedVIP", JSON.stringify(used));
+      localStorage.setItem("enteredVIP", JSON.stringify(vipList));
+
+      document.body.style.background = "gold";
+      result.innerText = "⭐ VIP ДОЗВОЛЕНО";
+
+      renderVIP();
+
+    } else {
+      document.body.style.background = "red";
+      result.innerText = "❌ НЕ VIP";
+    }
+
+  } else {
+    document.body.style.background = "red";
+    result.innerText = "❌ НЕ VIP QR";
+  }
+}
+
+let scanner = new Html5QrcodeScanner("reader",{fps:10});
+scanner.render(onScanSuccess);
+
+// 📋 список VIP
+function renderVIP(){
+  let list = document.getElementById("vipList");
+  let data = JSON.parse(localStorage.getItem("enteredVIP") || "[]");
+
+  list.innerHTML = "";
+
+  data.forEach(code=>{
+    let li = document.createElement("li");
+    li.innerText = code;
+    list.appendChild(li);
+  });
+}
+
+// 🗑 очистка
+function resetVIP(){
+  localStorage.removeItem("enteredVIP");
+  localStorage.removeItem("usedVIP");
+  renderVIP();
+  alert("VIP список очищено");
+}
+
+renderVIP();
+
+</script>
+
+</body>
+</html>
