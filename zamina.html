@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Substitution Board</title>
+
+<style>
+body {
+  margin:0;
+  background:black;
+  color:white;
+  font-family:Arial;
+  text-align:center;
+}
+
+#board {
+  margin-top:50px;
+  font-size:120px;
+  font-weight:bold;
+}
+
+.red { color:red; }
+.green { color:lime; }
+
+.controls {
+  margin-top:40px;
+}
+
+input {
+  font-size:30px;
+  width:120px;
+  text-align:center;
+  margin:10px;
+}
+
+button {
+  font-size:20px;
+  padding:10px 20px;
+  margin:10px;
+  border:none;
+  border-radius:10px;
+}
+
+.show { background:lime; }
+.clear { background:red; color:white; }
+.full { background:orange; }
+</style>
+</head>
+
+<body>
+
+<h2>⚽ Табло замін</h2>
+
+<div id="board">
+  <span id="out" class="red">--</span>
+  <span id="in" class="green">--</span>
+</div>
+
+<div class="controls">
+  <input type="number" id="outInput" placeholder="OUT">
+  <input type="number" id="inInput" placeholder="IN">
+  <br>
+
+  <button class="show" onclick="showNumbers()">Показати</button>
+  <button class="clear" onclick="clearBoard()">Очистити</button>
+  <button class="full" onclick="goFull()">На весь екран</button>
+</div>
+
+<script>
+function showNumbers() {
+  document.getElementById("out").innerText =
+    document.getElementById("outInput").value || "--";
+
+  document.getElementById("in").innerText =
+    document.getElementById("inInput").value || "--";
+}
+
+function clearBoard() {
+  document.getElementById("out").innerText = "--";
+  document.getElementById("in").innerText = "--";
+}
+
+function goFull() {
+  document.documentElement.requestFullscreen();
+}
+</script>
+
+</body>
+</html>
