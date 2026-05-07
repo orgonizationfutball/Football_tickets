@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S.F.A League — Протокол Матчу</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#0b0f0b;
+    color:white;
+}
+
+header{
+    background:linear-gradient(90deg,#00a000,#006400);
+    padding:20px;
+    text-align:center;
+    font-size:32px;
+    font-weight:bold;
+    box-shadow:0 0 15px #00ff00;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:#111;
+    border:2px solid #00aa00;
+    border-radius:15px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 0 10px rgba(0,255,0,0.3);
+}
+
+h2{
+    color:#00ff66;
+    margin-top:0;
+}
+
+input, textarea{
+    width:100%;
+    padding:10px;
+    margin-top:8px;
+    margin-bottom:15px;
+    border:none;
+    border-radius:10px;
+    background:#222;
+    color:white;
+    font-size:16px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th, td{
+    border:1px solid #00aa00;
+    padding:10px;
+    text-align:center;
+}
+
+th{
+    background:#006400;
+}
+
+button{
+    background:#00aa00;
+    color:white;
+    border:none;
+    padding:15px 25px;
+    border-radius:10px;
+    font-size:18px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#00ff66;
+    color:black;
+}
+
+.footer{
+    text-align:center;
+    padding:20px;
+    color:#aaa;
+}
+
+.score{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+}
+
+.score input{
+    text-align:center;
+    font-size:30px;
+    font-weight:bold;
+}
+
+.team{
+    flex:1;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+⚽ S.F.A LEAGUE — ПРОТОКОЛ МАТЧУ ⚽
+</header>
+
+<div class="container">
+
+<div class="card">
+<h2>📋 Інформація про матч</h2>
+
+<label>Дата матчу</label>
+<input type="date">
+
+<label>Час</label>
+<input type="time">
+
+<label>Стадіон / Поле</label>
+<input type="text" placeholder="Назва поля">
+
+<label>Головний суддя</label>
+<input type="text" placeholder="Ім’я судді">
+
+<label>Боковий суддя</label>
+<input type="text" placeholder="Ім’я асистента">
+</div>
+
+<div class="card">
+<h2>⚽ Рахунок</h2>
+
+<div class="score">
+
+<div class="team">
+<input type="text" placeholder="Команда 1">
+</div>
+
+<input type="number" value="0">
+
+<h1>:</h1>
+
+<input type="number" value="0">
+
+<div class="team">
+<input type="text" placeholder="Команда 2">
+</div>
+
+</div>
+</div>
+
+<div class="card">
+<h2>🥅 Голи</h2>
+
+<table>
+<tr>
+<th>Хвилина</th>
+<th>Гравець</th>
+<th>Команда</th>
+</tr>
+
+<tr>
+<td><input type="text" placeholder="12'"></td>
+<td><input type="text"></td>
+<td><input type="text"></td>
+</tr>
+
+<tr>
+<td><input type="text"></td>
+<td><input type="text"></td>
+<td><input type="text"></td>
+</tr>
+</table>
+</div>
+
+<div class="card">
+<h2>🟨🟥 Картки</h2>
+
+<table>
+<tr>
+<th>Хвилина</th>
+<th>Гравець</th>
+<th>Картка</th>
+</tr>
+
+<tr>
+<td><input type="text"></td>
+<td><input type="text"></td>
+<td>
+<select style="width:100%;padding:10px;border-radius:10px;background:#222;color:white;">
+<option>🟨 Жовта</option>
+<option>🟥 Червона</option>
+</select>
+</td>
+</tr>
+</table>
+</div>
+
+<div class="card">
+<h2>🔄 Заміни</h2>
+
+<table>
+<tr>
+<th>Хвилина</th>
+<th>Вийшов</th>
+<th>Зайшов</th>
+</tr>
+
+<tr>
+<td><input type="text"></td>
+<td><input type="text"></td>
+<td><input type="text"></td>
+</tr>
+</table>
+</div>
+
+<div class="card">
+<h2>📝 Коментар судді</h2>
+
+<textarea rows="6" placeholder="Порушення, VAR, бійка, затримка часу..."></textarea>
+</div>
+
+<div class="card" style="text-align:center;">
+<button onclick="window.print()">🖨️ Роздрукувати протокол</button>
+</div>
+
+</div>
+
+<div class="footer">
+S.F.A League © 2026
+</div>
+
+</body>
+</html>
